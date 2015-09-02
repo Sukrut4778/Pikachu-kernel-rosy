@@ -3589,7 +3589,7 @@ tANI_U32 dot11fGetPackedIEESEVersion(tpAniSirGlobal, tDot11fIEESEVersion*, tANI_
 typedef struct sDot11fIEExtCap {
     tANI_U8      present;
     tANI_U8      num_bytes;
-    tANI_U8      bytes[9];
+    tANI_U8      bytes[15];
 } tDot11fIEExtCap;
 
 #define DOT11F_EID_EXTCAP ( 127 )
@@ -3597,7 +3597,7 @@ typedef struct sDot11fIEExtCap {
 // N.B. These #defines do *not* include the EID & length
 #define DOT11F_IE_EXTCAP_MIN_LEN ( 1 )
 
-#define DOT11F_IE_EXTCAP_MAX_LEN ( 9 )
+#define DOT11F_IE_EXTCAP_MAX_LEN ( 15 )
 
 #ifdef __cplusplus
 extern "C" {
