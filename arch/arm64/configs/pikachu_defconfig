@@ -762,3 +762,9 @@ CONFIG_NTFS_FS=y
 
 # sdcardfs
 CONFIG_SDCARD_FS=y
+
+#
+# Enable lzo/lz4
+#
+# CONFIG_ZRAM_LZO_COMPRESS is not set
+CONFIG_ZRAM_LZ4_COMPRESS=y
