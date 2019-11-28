@@ -21,6 +21,15 @@ CLANG_TRIPLE="aarch64-linux-gnu-"
 CCACHE_DIR="~/.ccache"
 OUT="out"
 
+# Modules environtment
+OUTDIR="$PWD/out/"
+SRCDIR="$PWD/"
+MODULEDIR="$PWD/zip/modules/system/lib/modules/"
+PRIMA="$PWD/zip/modules/system/vendor/lib/modules/wlan.ko"
+PRONTO="$PWD/zip/modules/system/vendor/lib/modules/pronto/pronto_wlan.ko"
+STRIP="/home/sukrutbhagwat4778/android/stock/bin/$(echo "$(find "/home/sukrutbhagwat4778/android/stock/bin" -type f -name "aarch64-*-gcc")" | awk -F '/' '{print $NF}' |\
+			sed -e 's/gcc/strip/')"
+
 # Color configs
 
 yellow='\033[0;33m'
@@ -98,6 +107,7 @@ echo -e "$blue Cleaning... \n$white"
 make O=$OUT clean
 make O=$OUT mrproper
 make clean && make mrproper
+rm -rf o*
 rm ${KERNEL_DIR}/out/arch/arm64/boot/Image
 
 }
@@ -106,9 +116,26 @@ function makezip() {
 echo -e "$yellow\n Cloning Zip if folder not exist... \n $white"
 git clone https://github.com/Sukrut4778/zip.git zip/
 echo -e "$blue\n Generating flashable zip now... \n $white"
+rm zip/*.zip
+for MOD in $(find "${OUTDIR}" -name '*.ko') ; do
+"${STRIP}" --strip-unneeded --strip-debug "${MOD}" &> /dev/null
+"${SRCDIR}"/scripts/sign-file sha512 \
+"${OUTDIR}/signing_key.priv" \
+"${OUTDIR}/signing_key.x509" \
+"${MOD}"
+find "${OUTDIR}" -name '*.ko' -exec cp {} "${MODULEDIR}" \;
+case ${MOD} in
+*/wlan.ko)
+cp -ar "${MOD}" "${PRIMA}"
+cp -ar "${MOD}" "${PRONTO}"
+esac
+done
+echo -e "\n(i) Done moving modules"
+rm $PWD/zip/modules/system/lib/modules/wlan.ko
 cp ${KERNEL_DIR}/out/arch/arm64/boot/Image.gz-dtb ${KERNEL_DIR}/zip
+cp /home/sukrut4778/pikachu/out/arch/arm64/boot/dts/qcom/sdm450-qrd_rosy.dtb /home/sukrut4778/pikachu/zip/dtbs
+cp /home/sukrut4778/pikachu/out/arch/arm64/boot/dts/qcom/sdm450-qrd_rosy_aosp.dtb /home/sukrut4778/pikachu/zip/dtbs
 cd zip/
-rm *.zip modules/patchholder patch/patchholder ramdisk/patchholder
 zip -r $zip_name *
 cd ${KERNEL_DIR}
 }
