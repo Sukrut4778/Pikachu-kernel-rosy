@@ -27,7 +27,7 @@ SRCDIR="$PWD/"
 MODULEDIR="$PWD/zip/modules/system/lib/modules/"
 PRIMA="$PWD/zip/modules/system/vendor/lib/modules/wlan.ko"
 PRONTO="$PWD/zip/modules/system/vendor/lib/modules/pronto/pronto_wlan.ko"
-STRIP="/home/sukrutbhagwat4778/android/stock/bin/$(echo "$(find "/home/sukrutbhagwat4778/android/stock/bin" -type f -name "aarch64-*-gcc")" | awk -F '/' '{print $NF}' |\
+STRIP="/home/${USER}/toolchain/gcc-linaro-7.4.1/bin/$(echo "$(find "//home/${USER}/toolchain/gcc-linaro-7.4.1/bin" -type f -name "aarch64-*-gcc")" | awk -F '/' '{print $NF}' |\
 			sed -e 's/gcc/strip/')"
 
 # Color configs
@@ -118,7 +118,7 @@ git clone https://github.com/Sukrut4778/zip.git zip/
 echo -e "$blue\n Generating flashable zip now... \n $white"
 rm zip/*.zip
 for MOD in $(find "${OUTDIR}" -name '*.ko') ; do
-"${STRIP}" --strip-unneeded --strip-debug "${MOD}" &> /dev/null
+"${STRIP}" --strip-unneeded --strip-debug "${MOD}"
 "${SRCDIR}"/scripts/sign-file sha512 \
 "${OUTDIR}/signing_key.priv" \
 "${OUTDIR}/signing_key.x509" \
